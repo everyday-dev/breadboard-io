@@ -38,7 +38,7 @@ jobs:
 
     - name: Generate BOM
       run: |
-        python ./util/bom_csv_grouped_by_mfp.py ./$PROJECT_NAME.csv
+        python ./util/bom_csv_grouped_by_mfp.py ./$PROJECT_NAME.xml ./$PROJECT_NAME.csv
 
     - name: Generate STEP
       run: |
