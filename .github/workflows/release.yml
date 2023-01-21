@@ -1,0 +1,58 @@
+name: Release
+
+on:
+  push:
+    branches: [ main ]
+
+env:
+  PROJECT_NAME: "breadboard-io"
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Check out submodules
+      run: git submodule update --init --recursive
+
+    - name: Install KiCAD
+      run: |
+        sudo apt-get install
+
+    - name: Generate Netlist
+      run: |
+        kicad-cli-nightly sch export netlist --format kicadxml ./breadboard-io/breadboard-io.kicad_sch
+
+    - name: Retrieve project revision
+      run: |
+        python ./util/getRevision.py ./$PROJECT_NAME.xml ./revision.txt
+        echo "VERSION_MAJOR=$(cat revision.txt)" >> $GITHUB_ENV
+
+    - name: Generate Schematic
+      run: |
+        kicad-cli-nightly sch export pdf $PROJECT_NAME/$PROJECT_NAME.kicad_sch
+
+    - name: Generate BOM
+      run: |
+        python ./util/bom_csv_grouped_by_mfp.py ./$PROJECT_NAME.csv
+
+    - name: Generate STEP
+      run: |
+        kicad-cli-nightly pcb export step --subst-models $PROJECT_NAME/$PROJECT_NAME.kicad_pcb
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Artifacts
+        retention-days: 1
+        path: |
+          ./$PROJECT_NAME.pdf
+          ./revision.txt
+
+    # - uses: ncipollo/release-action@v1
+    #   with:
+    #     artifacts: "output/*.elf,output/*.hex"
+    #     token: ${{ secrets.GITHUB_TOKEN }}
+    #     tag: ${{env.VERSION_MAJOR}}.${{env.VERSION_MINOR}}.${{env.VERSION_PATCH}}

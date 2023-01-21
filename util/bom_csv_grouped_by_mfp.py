@@ -136,5 +136,3 @@ for group in grouped:
     writerow( out, row  )
 
 f.close()
-
-print(net.getRevision())

@@ -30,3 +30,4 @@ fp-info-cache
 *gerbers/
 *.zip
 *.kicad_prl
+*.step
