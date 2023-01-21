@@ -19,7 +19,9 @@ jobs:
 
     - name: Install KiCAD
       run: |
-        sudo apt-get install
+        sudo add-apt-repository --yes ppa:kicad/kicad-dev-nightly
+        sudo apt update
+        sudo apt install kicad-nightly
 
     - name: Generate Netlist
       run: |
