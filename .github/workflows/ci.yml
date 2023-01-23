@@ -89,4 +89,4 @@ jobs:
           output/*.step
           ${{env.PROJECT_NAME}}_${{env.REVISION}}_gerbers.zip
         token: ${{ secrets.GITHUB_TOKEN }}
-        tag: env.REVISION
+        tag: ${{env.REVISION}}
