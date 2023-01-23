@@ -32,7 +32,7 @@ if(revision == ''):
     revision = datetime.today().strftime('%Y-%m-%d_%H:%M:%S')
 else:
     # Replace all spaces with an underscore in the revision
-    revision = revision.replace(' ', '_')
+    revision = revision.replace(' ', '-')
 
 # Write the revision to our out file
 f.write(revision)
