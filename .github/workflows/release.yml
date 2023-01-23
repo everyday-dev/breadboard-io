@@ -48,7 +48,7 @@ jobs:
         kicad-cli-nightly pcb export step --subst-models $PROJECT_NAME/$PROJECT_NAME.kicad_pcb -o output/$PROJECT_NAME_$REVISION.step
 
     - name: Upload local artifacts to CI job
-      if: gitub.ref == 'dev'
+      if: github.ref == 'dev'
       uses: actions/upload-artifact@v2
       with:
         name: KiCAD Artifacts
