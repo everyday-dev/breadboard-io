@@ -20,7 +20,6 @@ jobs:
     - name: Get Git Branch
       run: |
         echo "GIT_BRANCH=$(echo $GITHUB_REF | cut -d'/' -f 3)" >> $GITHUB_ENV
-        echo $GIT_BRANCH
 
     - name: Install KiCAD
       run: |
@@ -34,7 +33,7 @@ jobs:
 
     - name: Retrieve project revision
       run: |
-        python ./util/getRevision.py ./$PROJECT_NAME.xml ./revision.txt
+        python ./util/getRevision.py ./${{env.PROJECT_NAME}}.xml ./revision.txt
         echo "REVISION=$(cat revision.txt)" >> $GITHUB_ENV
 
     - name: Create output directory
@@ -42,18 +41,18 @@ jobs:
 
     - name: Generate Schematic
       run: |
-        kicad-cli-nightly sch export pdf $PROJECT_NAME/$PROJECT_NAME.kicad_sch -o output/$PROJECT_NAME_$REVISION.pdf
+        kicad-cli-nightly sch export pdf ${{env.PROJECT_NAME}}/${{env.PROJECT_NAME}}.kicad_sch -o output/${{env.PROJECT_NAME}}_$REVISION.pdf
 
     - name: Generate BOM
       run: |
-        python ./util/bom_csv_grouped_by_mfp.py ./$PROJECT_NAME.xml ./output/$PROJECT_NAME_$REVISION_BOM.csv
+        python ./util/bom_csv_grouped_by_mfp.py ./${{env.PROJECT_NAME}}.xml ./output/${{env.PROJECT_NAME}}_$REVISION_BOM.csv
 
     - name: Generate STEP
       run: |
-        kicad-cli-nightly pcb export step --subst-models $PROJECT_NAME/$PROJECT_NAME.kicad_pcb -o output/$PROJECT_NAME_$REVISION.step
+        kicad-cli-nightly pcb export step --subst-models ${{env.PROJECT_NAME}}/${{env.PROJECT_NAME}}.kicad_pcb -o output/${{env.PROJECT_NAME}}_$REVISION.step
 
     - name: Upload local artifacts to CI job
-      if: github.ref == 'dev'
+      if: $GIT_BRANCH == 'dev'
       uses: actions/upload-artifact@v2
       with:
         name: KiCAD Artifacts
@@ -67,4 +66,4 @@ jobs:
       with:
         artifacts: output/**
         token: ${{ secrets.GITHUB_TOKEN }}
-        tag: ${{env.VERSION_MAJOR}}.${{env.VERSION_MINOR}}.${{env.VERSION_PATCH}}
+        tag: $REVISION
