@@ -70,7 +70,9 @@ jobs:
         name: KiCAD Artifacts
         retention-days: 1
         path: |
-          output/**
+          output/*.pdf
+          output/*.csv
+          output/*.step
           ${{env.PROJECT_NAME}}_${{env.REVISION}}_gerbers.zip
 
     - name: Create Github release
@@ -78,7 +80,9 @@ jobs:
       uses: ncipollo/release-action@v1
       with:
         artifacts: |
-          output/**
+          output/*.pdf
+          output/*.csv
+          output/*.step
           ${{env.PROJECT_NAME}}_${{env.REVISION}}_gerbers.zip
         token: ${{ secrets.GITHUB_TOKEN }}
         tag: env.REVISION
