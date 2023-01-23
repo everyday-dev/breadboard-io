@@ -52,7 +52,7 @@ jobs:
         kicad-cli-nightly pcb export step --subst-models ${{env.PROJECT_NAME}}/${{env.PROJECT_NAME}}.kicad_pcb -o output/${{env.PROJECT_NAME}}_${{env.REVISION}}.step
 
     - name: Upload local artifacts to CI job
-      if: env.GITHUB_REF_NAME == 'dev'
+      if: env.GIT_BRANCH == 'dev'
       uses: actions/upload-artifact@v2
       with:
         name: KiCAD Artifacts
@@ -61,7 +61,7 @@ jobs:
           output/**
 
     - name: Create Github release
-      if: env.GITHUB_REF_NAME == 'main'
+      if: env.GIT_BRANCH == 'main'
       uses: ncipollo/release-action@v1
       with:
         artifacts: output/**
