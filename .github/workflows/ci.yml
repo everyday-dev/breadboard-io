@@ -9,7 +9,7 @@ env:
   CLI_TOOL: "kicad-cli-nightly"
 
 jobs:
-  Generate KiCAD outputs:
+  Generate_KiCAD_outputs:
 
     runs-on: ubuntu-latest
 
