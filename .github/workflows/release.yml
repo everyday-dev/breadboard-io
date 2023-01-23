@@ -6,7 +6,6 @@ on:
 
 env:
   PROJECT_NAME: "breadboard-io"
-  GIT_BRANCH: $(echo github.ref | cut -d'/' -f 3)
 
 jobs:
   build:
@@ -18,8 +17,10 @@ jobs:
     - name: Check out submodules
       run: git submodule update --init --recursive
 
-    - name: ECHO GIT BRANCH
-      run: echo $GIT_BRANCH
+    - name: Get Git Branch
+      run: |
+        echo "GIT_BRANCH=$(echo $GITHUB_REF | cut -d'/' -f 3)" >> $GITHUB_ENV
+        echo $GIT_BRANCH
 
     - name: Install KiCAD
       run: |
