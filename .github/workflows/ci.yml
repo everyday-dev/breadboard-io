@@ -8,7 +8,7 @@ env:
   PROJECT_NAME: "breadboard-io"
 
 jobs:
-  build:
+  Generate KiCAD outputs:
 
     runs-on: ubuntu-latest
 
@@ -53,12 +53,11 @@ jobs:
 
     - name: Upload local artifacts to CI job
       if: env.GIT_BRANCH == 'dev'
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: KiCAD Artifacts
         retention-days: 1
-        path: |
-          output/**
+        path: output/**
 
     - name: Create Github release
       if: env.GIT_BRANCH == 'main'
