@@ -2,7 +2,7 @@ name: Release
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, dev ]
 
 env:
   PROJECT_NAME: "breadboard-io"
@@ -30,31 +30,36 @@ jobs:
     - name: Retrieve project revision
       run: |
         python ./util/getRevision.py ./$PROJECT_NAME.xml ./revision.txt
-        echo "VERSION_MAJOR=$(cat revision.txt)" >> $GITHUB_ENV
+        echo "REVISION=$(cat revision.txt)" >> $GITHUB_ENV
+
+    - name: Create output directory
+      run: mkdir -p output
 
     - name: Generate Schematic
       run: |
-        kicad-cli-nightly sch export pdf $PROJECT_NAME/$PROJECT_NAME.kicad_sch
+        kicad-cli-nightly sch export pdf $PROJECT_NAME/$PROJECT_NAME.kicad_sch -o output/$PROJECT_NAME_$REVISION.pdf
 
     - name: Generate BOM
       run: |
-        python ./util/bom_csv_grouped_by_mfp.py ./$PROJECT_NAME.xml ./$PROJECT_NAME.csv
+        python ./util/bom_csv_grouped_by_mfp.py ./$PROJECT_NAME.xml ./output/$PROJECT_NAME_$REVISION_BOM.csv
 
     - name: Generate STEP
       run: |
-        kicad-cli-nightly pcb export step --subst-models $PROJECT_NAME/$PROJECT_NAME.kicad_pcb
+        kicad-cli-nightly pcb export step --subst-models $PROJECT_NAME/$PROJECT_NAME.kicad_pcb -o output/$PROJECT_NAME_$REVISION.step
 
-    - name: Upload build artifacts
+    - name: Upload local artifacts to CI job
+      if: gitub.ref == 'dev'
       uses: actions/upload-artifact@v2
       with:
-        name: Artifacts
+        name: KiCAD Artifacts
         retention-days: 1
         path: |
-          ./$PROJECT_NAME.pdf
-          ./revision.txt
+          output/**
 
-    # - uses: ncipollo/release-action@v1
-    #   with:
-    #     artifacts: "output/*.elf,output/*.hex"
-    #     token: ${{ secrets.GITHUB_TOKEN }}
-    #     tag: ${{env.VERSION_MAJOR}}.${{env.VERSION_MINOR}}.${{env.VERSION_PATCH}}
+    - name: Create Github release
+      if: github.ref == 'main'
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: output/**
+        token: ${{ secrets.GITHUB_TOKEN }}
+        tag: ${{env.VERSION_MAJOR}}.${{env.VERSION_MINOR}}.${{env.VERSION_PATCH}}
