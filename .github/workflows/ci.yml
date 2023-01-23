@@ -2,11 +2,11 @@ name: Release
 
 on:
   # Enable workflow only when manually called
-  workflow_dispatch
+  # workflow_dispatch
   # OR
   # Enable workflow on pushes to main and dev
-  # push:
-    # branches: [ main, dev ]
+  push:
+    branches: [ main, dev ]
 
 env:
   PROJECT_NAME: "breadboard-io"
