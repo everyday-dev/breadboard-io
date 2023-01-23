@@ -543,8 +543,11 @@ class netlist():
         if self._curr_element.name == "library":
             self.libraries.append(self._curr_element)
 
+        # If this element is a title block, store it for later
         if self._curr_element.name == "title_block":
-            self.titleBlock = self._curr_element
+            # We only want to store it on the first occurance
+            if self.titleBlock is None:
+                self.titleBlock = self._curr_element
 
         return self._curr_element
 

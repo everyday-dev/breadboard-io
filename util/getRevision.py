@@ -29,7 +29,7 @@ revision = net.getRevision()
 # Check if the revision is an empty string.. If it is, set the
 # revision to todays date
 if(revision == ''):
-    revision = datetime.today().strftime('%Y-%m-%d_%H:%M:%S')
+    revision = datetime.today().strftime('%Y-%m-%d_%H-%M-%S')
 else:
     # Replace all spaces with an underscore in the revision
     revision = revision.replace(' ', '-')
