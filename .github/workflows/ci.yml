@@ -2,11 +2,11 @@ name: Release
 
 on:
   # Enable workflow only when manually called
-  # workflow_dispatch
+  workflow_dispatch
   # OR
   # Enable workflow on pushes to main and dev
-  push:
-    branches: [ main, dev ]
+  # push:
+    # branches: [ main, dev ]
 
 env:
   PROJECT_NAME: "breadboard-io"
@@ -48,7 +48,7 @@ jobs:
 
     - name: Generate Schematic
       run: |
-        ${{env.CLI_TOOL}} sch export pdf ${{env.PROJECT_NAME}}/${{env.PROJECT_NAME}}.kicad_sch -o output/${{env.PROJECT_NAME}}_${{env.REVISION}}.pdf
+        ${{env.CLI_TOOL}} sch export pdf ${{env.PROJECT_NAME}}/${{env.PROJECT_NAME}}.kicad_sch -o output/${{env.PROJECT_NAME}}_${{env.REVISION}}_schematic.pdf
 
     - name: Generate BOM
       run: |
@@ -56,7 +56,7 @@ jobs:
 
     - name: Generate STEP
       run: |
-        ${{env.CLI_TOOL}} pcb export step --subst-models ${{env.PROJECT_NAME}}/${{env.PROJECT_NAME}}.kicad_pcb -o output/${{env.PROJECT_NAME}}_${{env.REVISION}}.step
+        ${{env.CLI_TOOL}} pcb export step --subst-models ${{env.PROJECT_NAME}}/${{env.PROJECT_NAME}}.kicad_pcb -o output/${{env.PROJECT_NAME}}_${{env.REVISION}}_3D.step
 
     - name: Generate Gerbers & Drill
       run: |
